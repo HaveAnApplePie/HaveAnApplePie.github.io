@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>LuLu&#39;s Blog</title>
+    <link>https://HaveAnApplePie.github.io/</link>
+    <description>Recent content on LuLu&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 23 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://HaveAnApplePie.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CMU15213 CacheLab</title>
+      <link>https://HaveAnApplePie.github.io/posts/tech/cmu15213-cachelab/</link>
+      <pubDate>Thu, 23 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://HaveAnApplePie.github.io/posts/tech/cmu15213-cachelab/</guid>
+      <description>前言 这篇博客主要是关于CMU15-213课程的CacheLab中的Part B实验的个人优化方案介绍。博客中不涉及具体的代码，具体代码请查看该</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://HaveAnApplePie.github.io/sitemap.xml

@@ -2,27 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on LuLu&#39;s Blog</title>
-    <link>https://HaveAnApplePie.github.io/posts/</link>
+    <link>https://haveanapplepie.github.io/posts/</link>
     <description>Recent content in Posts on LuLu&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 23 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://HaveAnApplePie.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://haveanapplepie.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CMU15418 Assignment1</title>
+      <link>https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/</link>
+      <pubDate>Tue, 06 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/</guid>
+      <description>这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。</description>
+    </item>
+    
     <item>
       <title>CMU15213 CacheLab</title>
-      <link>https://HaveAnApplePie.github.io/posts/tech/cmu15213-cachelab/</link>
+      <link>https://haveanapplepie.github.io/posts/tech/cmu15213-cachelab/</link>
       <pubDate>Thu, 23 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://HaveAnApplePie.github.io/posts/tech/cmu15213-cachelab/</guid>
-      <description>前言 这篇博客主要是关于CMU15-213课程的CacheLab中的Part B实验的个人优化方案介绍。博客中不涉及具体的代码，具体代码请查看该</description>
+      <guid>https://haveanapplepie.github.io/posts/tech/cmu15213-cachelab/</guid>
+      <description>这篇博客主要是关于CMU15-213课程的CacheLab中的Part B实验的个人优化方案介绍。</description>
     </item>
     
     <item>
       <title>Python命令行交互库Prompt</title>
-      <link>https://HaveAnApplePie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</link>
+      <link>https://haveanapplepie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</link>
       <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://HaveAnApplePie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</guid>
-      <description>前几天师兄找我帮他改一下组内的一个python自动化工具的命令行交互界面，主要是美观一下界面，并且加上一些常用的功能，如自动补全等。因为之前</description>
+      <guid>https://haveanapplepie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</guid>
+      <description>使用Prompt库构建Python自动化工具的命令行交互界面和界面优化</description>
     </item>
     
   </channel>

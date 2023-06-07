@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CMU15418 Assignment1 | LuLu&#39;s Blog</title>
+<meta name="keywords" content="cmu15418/cs149, parallel computing, ispc">
+<meta name="description" content="这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。">
+<meta name="author" content="LuLu">
+<link rel="canonical" href="https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dccf83c007085fae1d65c81e6163e0fd79b183cc25ef930e59c11a34efc2dce9.css" integrity="sha256-3M&#43;DwAcIX64dZcgeYWPg/Xmxg8wl75MOWcEaNO/C3Ok=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.acb54fd32bbc1982428b8850317e45d076b95012730a5936667e6bc21777692a.js" integrity="sha256-rLVP0yu8GYJCi4hQMX5F0Ha5UBJzClk2Zn5rwhd3aSo="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://haveanapplepie.github.io/img/Q.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="https://haveanapplepie.github.io/img/Q.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://haveanapplepie.github.io/img/Q.jpg">
+<link rel="apple-touch-icon" href="https://haveanapplepie.github.io/Q.jpg">
+<link rel="mask-icon" href="https://haveanapplepie.github.io/Q.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+<meta property="og:title" content="CMU15418 Assignment1" />
+<meta property="og:description" content="这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-06-06T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CMU15418 Assignment1"/>
+<meta name="twitter:description" content="这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://haveanapplepie.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CMU15418 Assignment1",
+      "item": "https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CMU15418 Assignment1",
+  "name": "CMU15418 Assignment1",
+  "description": "这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。",
+  "keywords": [
+    "cmu15418/cs149", "parallel computing", "ispc"
+  ],
+  "articleBody": "Program 1: Parallel Fractal Generation Using Threads(20 points) 1.研究加速比与线程关系 研究加速比与线程关系。加速比与使用的线程数成线性关系吗？在您的文章中假设为什么是（或不是）这种情况？\n与基准的串行生成效率相比，在不同线程数下生成不同Mandelbrot图的加速比结果如下图所示。\n可以看到对于view1图来说，加速比与使用的线程数并不成线性相关，甚至3线程的时间比2线程的时间更长。而对于view2图来说，加速比与使用的线程数近似成线性相关。\n可能的原因是因为线程根据块进行划分工作区域，而各个区域之间的工作负载并不平衡。导致最终需要的时间会取决于工作量最大的线程锁消耗的时间。因为观察view1可以发现，中间区域亮的部分更多，说明所需要的计算更多，而上下边缘亮部区域较小。\n而对于view2，他整个图片的上下不同区域的亮度近似，计算量近似。所以加速比随线程增加而线性增加。\n2. 验证假设 通过在调用workerThreadStart()函数的开头和结尾加上计时代码，得到如下结果。对于view1的生成过程，当使用2个线程时，每个线程都需要接近150多ms的时间来完成计算，所以最后的加速比约为1.9x，接近2x。\n而在使用3个线程时，可以发现线程1即中间那个线程，计算时间特别长，需要185ms左右的时间才能够完成计算。而其前后两个线程都只需要62ms左右的时间即可完成。所以总的计算时长由线程1决定。\n证明是工作负载不平衡导致的加速比无法接近预期结果。\n3.修改工作到线程的映射 以实现在 Mandelbrot 集的两个视图上将加速提高到大约 7-8 倍\n因为要求提到要使用静态分配的方法解决这一问题，所以可以让每个线程交替执行一行，将块划分变为按行交替划分。即第i个线程执行第i+num*k行，其中i为线程号（从0开始），num为总的线程数量，k为大于等于0的整数。\n最后我在view1和view2上得到的加速比分别为6.59和6.3。\n对于加速比未达到7-8，我一开始猜想可能是因为我没有改动mandelbrotSerial()函数，选择在workerThreadStart()中通过多次调用mandelbrotSerial()函数的方式进行计算。每行调用一次函数的开销导致了性能下降。后续我改为了每个线程每次计算n行（n=1,2,4,8），减小了总的函数调用次数，但加速比仍然没有太大变化。猜测可能是和机器有关。因为静态分配应该是按行进行分配的。\n4.翻倍线程数 现在用 16 个线程运行改进后的代码。性能是否明显高于运行八个线程时的性能？为什么或者为什么不？\n因为我用的机器是i7-12700h，有6个性能核心和8个效率核心，而6个性能核心各自搭载了intel的超线程技术，所以理论上总的线程数为6*2+8=20线程。所以测试已修改过映射关系的并行代码在20线程和40线程上的结果。\n在view1上，20线程的加速比为12.95x，40线程的加速比为13.27x.在view2上，20线程的加速比为12.19x,40线程的加速比为12.09x。可以看到，20线程和40线程无明显性能优劣，甚至基本持平。 我的猜测是，20线程是系统能够同时工作而不切换线程上下文的最大线程数。能够实际同时工作的最大线程数就是20，而40线程实际上是多了线程之间的上下文的切换，每个时钟周期的计算量和20线程基本相同。所以两者的加速比基本持平。\nProgram 2: Vectrorizing Code Using SIMD Intrinsics (20 points) 1. 矢量利用率的变化 矢量利用率是随着VECTOR_WIDTH变化而增加、减少还是保持不变？为什么？\n首先查看代码可以发现，指数为0的数据占总数据的比例较少，所以当VECTOR_WIDTH增加的时候，会有更多的同组的数据运行y==0这部分的代码，导致一定的矢量利用率的下降。\n另外，同一批数据进行矢量乘法的次数取决于这批数据中最大的指数的值。所以当VECTOR_WIDTH增加时，虽然总的指令数减少了，但同组数据进行无效的被屏蔽的乘法的次数也会增加。\n所以综上所述，矢量利用率随着VECTOR_WIDTH的增加，矢量利用率会下降。\nVECTOR_WIDTH the vector utilization 2 76.90% 4 69.70% 8 65.90% 16 64.20% Program 3, Part 2: ISPC Tasks (10 of 20 points) 1.SIMD期望加速比 编译运行ispc编译器产生的程序，此时期望的加速比是多少？为什么观察到的数字小于这个理想值？\n我期望的加速比为8.但实际得到的加速比约为3.5x左右。我觉得这是因为图片view1中会存在一些处于黑白边界的值，或者同样的8位值其白色程度不同，反映了不同的计算迭代次数。但因为使用了SIMD，所以会有无效的迭代计算操作。\n这个可以通过view2图来间接证明。观察view2图可以发现，view2图整体颜色分布较为平均，黑白相间的区域更多，因此理论上加速比更慢。通过实际测试得到也可以发现确实如此，在view2上加速比约为2.8x左右。\nProgram 3, Part 2: ISPC Tasks (10 of 20 points) 1.tasks期望加速比 mandelbrot_ispc带参数运行--tasks。您在视图 1 上观察到什么加速？mandelbrot_ispc与不将计算划分为任务的版本相比，加速是多少？\n在view 1上观察到的加速比为6.81x。相比不划分任务，加速为1.94x。接近2x的预期提升。\n2.优化tasks性能 通过仅更改函数中的代码 mandelbrot_ispc_withtasks()，您应该能够获得超过顺序版本代码 32 倍以上的性能！您如何确定要创建多少任务？为什么您选择的数字效果最好？\n我通过测试发现，将8行计算任务划分为单个的task，能够达到37.76x的加速比。\n我测试了2,4,8……height个不同的任务个数，当任务个数太少时，容易产生负载不均衡的现象，总体时间受到最慢的任务的拖累。当每个任务仅为1行时，虽然能够得到接近30x加速比的结果，但可能由于每个任务过小，任务的切换上需要耗费一定的时间。\n后续测试了每个任务2,4,8行，在8行时能够得到37.76x的效果。我想是因为这样既保证了任务的细颗粒度地划分，保证负载较为均匀的分配，又保证了较少的任务切换的过程。\nProgram 4: Iterative sqrt (15 points) 1.ISPC加速比 构建并运行sqrt。报告单 CPU 内核（无任务）和使用所有内核（有任务）时的 ISPC 实现加速。SIMD 并行化带来的加速是多少？多核并行化带来的加速是多少？\nSIMD并行化带来的加速是3.64x,多核并行化带来的加速是47.71x,相比SIMD的加速比是13.01x。\n2.构造最优输入 构造一个特定的输入，使代码的顺序版本的加速最大化，并报告所实现的最终加速（对于有任务和无任务 ISPC 实现）。您的修改是否提高了 SIMD 加速？它是否提高了多核加速（即从无任务的 ISPC 转移到有任务的 ISPC 的好处）？请解释原因。\n我构造的特定输入为所有value[i]都为2.999。这样可以保证计算需要的时间和每次使用SIMD操作时没有多余的掩膜计算操作的浪费，能够最大程度地展示SIMD的并行优势，和多核加速的优势。 最终SIMD并行化带来的加速是4.38x,多核并行化带来的加速是54.20x,相比SIMD的加速比是12.37x。\n3.构造最坏输入 构造一个特定的输入，使sqrtISPC （无任务）在代码的顺序版本上的加速最小化。描述这个输入，描述你选择它的原因，并报告 ISPC 实现的结果相对性能。效率损失的原因是什么？\n我构造的特定输入为所有整除8余数为0的i的value[i]的值为2.999，其余为1.这样就保证了一组8个数中，有7个数只需要1次迭代，而因为存在2.999,所有的1需要迭代和2.999一样的次数，导致性能大幅下降。\n最终SIMD并行化带来的加速是0.61x,多核并行化带来的加速是7.01x,相比SIMD的加速比是11.49x。 Program 5: BLAS saxpy (10 points) 1.ISPC加速比 编译运行saxpy。该程序将报告 ISPC（无任务）和 ISPC（有任务）实施 saxpy 的性能。您观察到在任务中使用 ISPC 有什么加速？解释这个程序的性能。你认为它可以得到实质性的改善吗？\n我观察到使用使用了task的ISPC和不使用task的ISPC程序所需要的时间几乎相等，加速比为1.14x。\n通过观察总的内存带宽，我觉得这一性能问题是由于内存带宽的限制引起的。可能是因为程序计算内容较为简单，时间性能瓶颈存在于内存的读取上，导致即使使用多核并行计算，但仍然是通过总线读取内存，受限于总线的带宽。\n为了测试验证这一问题，我将N的值x5,观察结果可以发现，内存的读取速度几乎没有变化，可以验证上述的结论。\n2.带宽计算公式 请注意main.cpp中计算消耗的总内存带宽的公式为TOTAL_BYTES = 4 * N * sizeof(float);。即使saxpy从 X 加载一个元素，从 Y 加载一个元素，并将一个元素写入result，乘数 4 也是正确的。为什么会这样？\n因为读取这一操作需要一次内存加载操作，而给result[i]赋值这一操作是一次修改操作。涉及内存的load和store，需要两次内存操作。所以总的操作次数为4.\n",
+  "wordCount" : "3582",
+  "inLanguage": "en",
+  "datePublished": "2023-06-06T00:00:00Z",
+  "dateModified": "2023-06-06T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "LuLu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LuLu's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://haveanapplepie.github.io/img/Q.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://haveanapplepie.github.io/" accesskey="h" title="LuLu&#39;s Blog (Alt + H)">LuLu&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://haveanapplepie.github.io/search" title="🔍搜索">
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/" title="🏠主页">
+                    <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/posts" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/archives/" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://haveanapplepie.github.io/links" title="🤝友链">
+                    <span>🤝友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://haveanapplepie.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://haveanapplepie.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      CMU15418 Assignment1
+    </h1>
+    <div class="post-description">
+      这篇博客主要是关于CMU15-418/CS149课程的第一个提交作业的实验结果的记录。
+    </div>
+    <div class="post-meta"><span title='2023-06-06 00:00:00 +0000 UTC'>2023-06-06</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;LuLu
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#program-1-parallel-fractal-generation-using-threads20-points" aria-label="Program 1: Parallel Fractal Generation Using Threads(20 points)">Program 1: Parallel Fractal Generation Using Threads(20 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1%e7%a0%94%e7%a9%b6%e5%8a%a0%e9%80%9f%e6%af%94%e4%b8%8e%e7%ba%bf%e7%a8%8b%e5%85%b3%e7%b3%bb" aria-label="1.研究加速比与线程关系">1.研究加速比与线程关系</a></li>
+                    <li>
+                        <a href="#2-%e9%aa%8c%e8%af%81%e5%81%87%e8%ae%be" aria-label="2. 验证假设">2. 验证假设</a></li>
+                    <li>
+                        <a href="#3%e4%bf%ae%e6%94%b9%e5%b7%a5%e4%bd%9c%e5%88%b0%e7%ba%bf%e7%a8%8b%e7%9a%84%e6%98%a0%e5%b0%84" aria-label="3.修改工作到线程的映射">3.修改工作到线程的映射</a></li>
+                    <li>
+                        <a href="#4%e7%bf%bb%e5%80%8d%e7%ba%bf%e7%a8%8b%e6%95%b0" aria-label="4.翻倍线程数">4.翻倍线程数</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#program-2-vectrorizing-code-using-simd-intrinsics-20-points" aria-label="Program 2: Vectrorizing Code Using SIMD Intrinsics (20 points)">Program 2: Vectrorizing Code Using SIMD Intrinsics (20 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e7%9f%a2%e9%87%8f%e5%88%a9%e7%94%a8%e7%8e%87%e7%9a%84%e5%8f%98%e5%8c%96" aria-label="1. 矢量利用率的变化">1. 矢量利用率的变化</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#program-3-part-2-ispc-tasks-10-of-20-points" aria-label="Program 3, Part 2: ISPC Tasks (10 of 20 points)">Program 3, Part 2: ISPC Tasks (10 of 20 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1simd%e6%9c%9f%e6%9c%9b%e5%8a%a0%e9%80%9f%e6%af%94" aria-label="1.SIMD期望加速比">1.SIMD期望加速比</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#program-3-part-2-ispc-tasks-10-of-20-points-1" aria-label="Program 3, Part 2: ISPC Tasks (10 of 20 points)">Program 3, Part 2: ISPC Tasks (10 of 20 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1tasks%e6%9c%9f%e6%9c%9b%e5%8a%a0%e9%80%9f%e6%af%94" aria-label="1.tasks期望加速比">1.tasks期望加速比</a></li>
+                    <li>
+                        <a href="#2%e4%bc%98%e5%8c%96tasks%e6%80%a7%e8%83%bd" aria-label="2.优化tasks性能">2.优化tasks性能</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#program-4-iterativesqrt15-points" aria-label="Program 4: Iterative sqrt (15 points)">Program 4: Iterative <code>sqrt</code> (15 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1ispc%e5%8a%a0%e9%80%9f%e6%af%94" aria-label="1.ISPC加速比">1.ISPC加速比</a></li>
+                    <li>
+                        <a href="#2%e6%9e%84%e9%80%a0%e6%9c%80%e4%bc%98%e8%be%93%e5%85%a5" aria-label="2.构造最优输入">2.构造最优输入</a></li>
+                    <li>
+                        <a href="#3%e6%9e%84%e9%80%a0%e6%9c%80%e5%9d%8f%e8%be%93%e5%85%a5" aria-label="3.构造最坏输入">3.构造最坏输入</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#program-5-blassaxpy10-points" aria-label="Program 5: BLAS saxpy (10 points)">Program 5: BLAS <code>saxpy</code> (10 points)</a><ul>
+                            
+                    <li>
+                        <a href="#1ispc%e5%8a%a0%e9%80%9f%e6%af%94-1" aria-label="1.ISPC加速比">1.ISPC加速比</a></li>
+                    <li>
+                        <a href="#2%e5%b8%a6%e5%ae%bd%e8%ae%a1%e7%ae%97%e5%85%ac%e5%bc%8f" aria-label="2.带宽计算公式">2.带宽计算公式</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+  <div class="post-content"><h2 id="program-1-parallel-fractal-generation-using-threads20-points">Program 1: Parallel Fractal Generation Using Threads(20 points)<a hidden class="anchor" aria-hidden="true" href="#program-1-parallel-fractal-generation-using-threads20-points">#</a></h2>
+<h3 id="1研究加速比与线程关系">1.研究加速比与线程关系<a hidden class="anchor" aria-hidden="true" href="#1研究加速比与线程关系">#</a></h3>
+<p><strong>研究加速比与线程关系。加速比与使用的线程数成线性关系吗？在您的文章中假设为什么是（或不是）这种情况？</strong></p>
+<p>与基准的串行生成效率相比，在不同线程数下生成不同Mandelbrot图的加速比结果如下图所示。</p>
+<p><img loading="lazy" src="/img/assit1-1.png" alt=""  />
+</p>
+<p>可以看到对于view1图来说，加速比与使用的线程数并不成线性相关，甚至3线程的时间比2线程的时间更长。而对于view2图来说，加速比与使用的线程数近似成线性相关。</p>
+<p>可能的原因是因为线程根据块进行划分工作区域，而各个区域之间的工作负载并不平衡。导致最终需要的时间会取决于工作量最大的线程锁消耗的时间。因为观察view1可以发现，中间区域亮的部分更多，说明所需要的计算更多，而上下边缘亮部区域较小。</p>
+<p>而对于view2，他整个图片的上下不同区域的亮度近似，计算量近似。所以加速比随线程增加而线性增加。</p>
+<h3 id="2-验证假设">2. 验证假设<a hidden class="anchor" aria-hidden="true" href="#2-验证假设">#</a></h3>
+<p>通过在调用<code>workerThreadStart()</code>函数的开头和结尾加上计时代码，得到如下结果。对于view1的生成过程，当使用2个线程时，每个线程都需要接近150多ms的时间来完成计算，所以最后的加速比约为1.9x，接近2x。</p>
+<p><img loading="lazy" src="/img/assit1-2.png" alt=""  />
+</p>
+<p>而在使用3个线程时，可以发现线程1即中间那个线程，计算时间特别长，需要185ms左右的时间才能够完成计算。而其前后两个线程都只需要62ms左右的时间即可完成。所以总的计算时长由线程1决定。</p>
+<p>证明是工作负载不平衡导致的加速比无法接近预期结果。</p>
+<p><img loading="lazy" src="/img/assit1-3.png" alt=""  />
+</p>
+<h3 id="3修改工作到线程的映射">3.修改工作到线程的映射<a hidden class="anchor" aria-hidden="true" href="#3修改工作到线程的映射">#</a></h3>
+<p><strong>以实现在 Mandelbrot 集的两个视图上将加速提高到大约 7-8 倍</strong></p>
+<p>因为要求提到要使用静态分配的方法解决这一问题，所以可以让每个线程交替执行一行，将块划分变为按行交替划分。即第i个线程执行第i+num*k行，其中i为线程号（从0开始），num为总的线程数量，k为大于等于0的整数。</p>
+<p>最后我在view1和view2上得到的加速比分别为6.59和6.3。</p>
+<p>对于加速比未达到7-8，我一开始猜想可能是因为我没有改动<code>mandelbrotSerial()</code>函数，选择在<code>workerThreadStart()</code>中通过多次调用<code>mandelbrotSerial()</code>函数的方式进行计算。每行调用一次函数的开销导致了性能下降。后续我改为了每个线程每次计算n行（n=1,2,4,8），减小了总的函数调用次数，但加速比仍然没有太大变化。猜测可能是和机器有关。因为静态分配应该是按行进行分配的。</p>
+<h3 id="4翻倍线程数">4.翻倍线程数<a hidden class="anchor" aria-hidden="true" href="#4翻倍线程数">#</a></h3>
+<p><strong>现在用 16 个线程运行改进后的代码。性能是否明显高于运行八个线程时的性能？为什么或者为什么不？</strong></p>
+<p>因为我用的机器是i7-12700h，有6个性能核心和8个效率核心，而6个性能核心各自搭载了intel的超线程技术，所以理论上总的线程数为6*2+8=20线程。所以测试已修改过映射关系的并行代码在20线程和40线程上的结果。</p>
+<p>在view1上，20线程的加速比为12.95x，40线程的加速比为13.27x.在view2上，20线程的加速比为12.19x,40线程的加速比为12.09x。可以看到，20线程和40线程无明显性能优劣，甚至基本持平。
+我的猜测是，20线程是系统能够同时工作而不切换线程上下文的最大线程数。能够实际同时工作的最大线程数就是20，而40线程实际上是多了线程之间的上下文的切换，每个时钟周期的计算量和20线程基本相同。所以两者的加速比基本持平。</p>
+<h2 id="program-2-vectrorizing-code-using-simd-intrinsics-20-points">Program 2: Vectrorizing Code Using SIMD Intrinsics (20 points)<a hidden class="anchor" aria-hidden="true" href="#program-2-vectrorizing-code-using-simd-intrinsics-20-points">#</a></h2>
+<h3 id="1-矢量利用率的变化">1. 矢量利用率的变化<a hidden class="anchor" aria-hidden="true" href="#1-矢量利用率的变化">#</a></h3>
+<p><strong>矢量利用率是随着<code>VECTOR_WIDTH</code>变化而增加、减少还是保持不变？为什么？</strong></p>
+<p>首先查看代码可以发现，指数为0的数据占总数据的比例较少，所以当<code>VECTOR_WIDTH</code>增加的时候，会有更多的同组的数据运行<code>y==0</code>这部分的代码，导致一定的矢量利用率的下降。</p>
+<p>另外，同一批数据进行矢量乘法的次数取决于这批数据中最大的指数的值。所以当<code>VECTOR_WIDTH</code>增加时，虽然总的指令数减少了，但同组数据进行无效的被屏蔽的乘法的次数也会增加。</p>
+<p>所以综上所述，矢量利用率随着<code>VECTOR_WIDTH</code>的增加，矢量利用率会下降。</p>
+<table>
+<thead>
+<tr>
+<th>VECTOR_WIDTH</th>
+<th>the vector utilization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>76.90%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>69.70%</td>
+</tr>
+<tr>
+<td>8</td>
+<td>65.90%</td>
+</tr>
+<tr>
+<td>16</td>
+<td>64.20%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="program-3-part-2-ispc-tasks-10-of-20-points">Program 3, Part 2: ISPC Tasks (10 of 20 points)<a hidden class="anchor" aria-hidden="true" href="#program-3-part-2-ispc-tasks-10-of-20-points">#</a></h2>
+<h3 id="1simd期望加速比">1.SIMD期望加速比<a hidden class="anchor" aria-hidden="true" href="#1simd期望加速比">#</a></h3>
+<p><strong>编译运行ispc编译器产生的程序，此时期望的加速比是多少？为什么观察到的数字小于这个理想值？</strong></p>
+<p>我期望的加速比为8.但实际得到的加速比约为3.5x左右。我觉得这是因为图片view1中会存在一些处于黑白边界的值，或者同样的8位值其白色程度不同，反映了不同的计算迭代次数。但因为使用了SIMD，所以会有无效的迭代计算操作。</p>
+<p>这个可以通过view2图来间接证明。观察view2图可以发现，view2图整体颜色分布较为平均，黑白相间的区域更多，因此理论上加速比更慢。通过实际测试得到也可以发现确实如此，在view2上加速比约为2.8x左右。</p>
+<h2 id="program-3-part-2-ispc-tasks-10-of-20-points-1">Program 3, Part 2: ISPC Tasks (10 of 20 points)<a hidden class="anchor" aria-hidden="true" href="#program-3-part-2-ispc-tasks-10-of-20-points-1">#</a></h2>
+<h3 id="1tasks期望加速比">1.tasks期望加速比<a hidden class="anchor" aria-hidden="true" href="#1tasks期望加速比">#</a></h3>
+<p><strong><code>mandelbrot_ispc</code>带参数运行<code>--tasks</code>。您在视图 1 上观察到什么加速？<code>mandelbrot_ispc</code>与不将计算划分为任务的版本相比，加速是多少？</strong></p>
+<p>在view 1上观察到的加速比为6.81x。相比不划分任务，加速为1.94x。接近2x的预期提升。</p>
+<h3 id="2优化tasks性能">2.优化tasks性能<a hidden class="anchor" aria-hidden="true" href="#2优化tasks性能">#</a></h3>
+<p><strong>通过仅更改函数中的代码 <code>mandelbrot_ispc_withtasks()</code>，您应该能够获得超过顺序版本代码 32 倍以上的性能！您如何确定要创建多少任务？为什么您选择的数字效果最好？</strong></p>
+<p>我通过测试发现，将8行计算任务划分为单个的task，能够达到37.76x的加速比。</p>
+<p>我测试了2,4,8……height个不同的任务个数，当任务个数太少时，容易产生负载不均衡的现象，总体时间受到最慢的任务的拖累。当每个任务仅为1行时，虽然能够得到接近30x加速比的结果，但可能由于每个任务过小，任务的切换上需要耗费一定的时间。</p>
+<p>后续测试了每个任务2,4,8行，在8行时能够得到37.76x的效果。我想是因为这样既保证了任务的细颗粒度地划分，保证负载较为均匀的分配，又保证了较少的任务切换的过程。</p>
+<p><img loading="lazy" src="/img/assit1-4.png" alt=""  />
+</p>
+<h2 id="program-4-iterativesqrt15-points">Program 4: Iterative <code>sqrt</code> (15 points)<a hidden class="anchor" aria-hidden="true" href="#program-4-iterativesqrt15-points">#</a></h2>
+<h3 id="1ispc加速比">1.ISPC加速比<a hidden class="anchor" aria-hidden="true" href="#1ispc加速比">#</a></h3>
+<p><strong>构建并运行<code>sqrt</code>。报告单 CPU 内核（无任务）和使用所有内核（有任务）时的 ISPC 实现加速。SIMD 并行化带来的加速是多少？多核并行化带来的加速是多少？</strong></p>
+<p>SIMD并行化带来的加速是3.64x,多核并行化带来的加速是47.71x,相比SIMD的加速比是13.01x。</p>
+<h3 id="2构造最优输入">2.构造最优输入<a hidden class="anchor" aria-hidden="true" href="#2构造最优输入">#</a></h3>
+<p><strong>构造一个特定的输入，使代码的顺序版本的加速最大化，并报告所实现的最终加速（对于有任务和无任务 ISPC 实现）。您的修改是否提高了 SIMD 加速？它是否提高了多核加速（即从无任务的 ISPC 转移到有任务的 ISPC 的好处）？请解释原因。</strong></p>
+<p>我构造的特定输入为所有value[i]都为2.999。这样可以保证计算需要的时间和每次使用SIMD操作时没有多余的掩膜计算操作的浪费，能够最大程度地展示SIMD的并行优势，和多核加速的优势。
+最终SIMD并行化带来的加速是4.38x,多核并行化带来的加速是54.20x,相比SIMD的加速比是12.37x。</p>
+<h3 id="3构造最坏输入">3.构造最坏输入<a hidden class="anchor" aria-hidden="true" href="#3构造最坏输入">#</a></h3>
+<p><strong>构造一个特定的输入，使<code>sqrt</code>ISPC （无任务）在代码的顺序版本上的加速最小化。描述这个输入，描述你选择它的原因，并报告 ISPC 实现的结果相对性能。效率损失的原因是什么？</strong></p>
+<p>我构造的特定输入为所有整除8余数为0的i的value[i]的值为2.999，其余为1.这样就保证了一组8个数中，有7个数只需要1次迭代，而因为存在2.999,所有的1需要迭代和2.999一样的次数，导致性能大幅下降。</p>
+<p>最终SIMD并行化带来的加速是0.61x,多核并行化带来的加速是7.01x,相比SIMD的加速比是11.49x。
+<img loading="lazy" src="/img/assit1-5.png" alt=""  />
+</p>
+<h2 id="program-5-blassaxpy10-points">Program 5: BLAS <code>saxpy</code> (10 points)<a hidden class="anchor" aria-hidden="true" href="#program-5-blassaxpy10-points">#</a></h2>
+<h3 id="1ispc加速比-1">1.ISPC加速比<a hidden class="anchor" aria-hidden="true" href="#1ispc加速比-1">#</a></h3>
+<p><strong>编译运行<code>saxpy</code>。该程序将报告 ISPC（无任务）和 ISPC（有任务）实施 saxpy 的性能。您观察到在任务中使用 ISPC 有什么加速？解释这个程序的性能。你认为它可以得到实质性的改善吗？</strong></p>
+<p>我观察到使用使用了task的ISPC和不使用task的ISPC程序所需要的时间几乎相等，加速比为1.14x。</p>
+<p><img loading="lazy" src="/img/assit1-6.png" alt=""  />
+</p>
+<p>通过观察总的内存带宽，我觉得这一性能问题是由于内存带宽的限制引起的。可能是因为程序计算内容较为简单，时间性能瓶颈存在于内存的读取上，导致即使使用多核并行计算，但仍然是通过总线读取内存，受限于总线的带宽。</p>
+<p>为了测试验证这一问题，我将N的值x5,观察结果可以发现，内存的读取速度几乎没有变化，可以验证上述的结论。</p>
+<p><img loading="lazy" src="/img/assit1-7.png" alt=""  />
+</p>
+<h3 id="2带宽计算公式">2.带宽计算公式<a hidden class="anchor" aria-hidden="true" href="#2带宽计算公式">#</a></h3>
+<p><strong>请注意<code>main.cpp</code>中计算消耗的总内存带宽的公式为<code>TOTAL_BYTES = 4 * N * sizeof(float);</code>。即使<code>saxpy</code>从 X 加载一个元素，从 Y 加载一个元素，并将一个元素写入<code>result</code>，乘数 4 也是正确的。为什么会这样？</strong></p>
+<p>因为读取这一操作需要一次内存加载操作，而给result[i]赋值这一操作是一次修改操作。涉及内存的load和store，需要两次内存操作。所以总的操作次数为4.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://haveanapplepie.github.io/posts/tech/cmu15213-cachelab/">
+    <span class="title">Next »</span>
+    <br>
+    <span>CMU15213 CacheLab</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on twitter"
+        href="https://twitter.com/intent/tweet/?text=CMU15418%20Assignment1&amp;url=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f&amp;title=CMU15418%20Assignment1&amp;summary=CMU15418%20Assignment1&amp;source=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f&title=CMU15418%20Assignment1">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on whatsapp"
+        href="https://api.whatsapp.com/send?text=CMU15418%20Assignment1%20-%20https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share CMU15418 Assignment1 on telegram"
+        href="https://telegram.me/share/url?text=CMU15418%20Assignment1&amp;url=https%3a%2f%2fhaveanapplepie.github.io%2fposts%2ftech%2fcmu15418-assignment1%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+  </footer><script src="https://giscus.app/client.js"
+        data-repo="HaveAnApplePie/HaveAnApplePie.github.io"
+        data-repo-id="R_kgDOJBf29Q"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJBf29c4CUcEr"
+        data-mapping="title"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="light"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://haveanapplepie.github.io/">LuLu&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

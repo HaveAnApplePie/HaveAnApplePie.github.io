@@ -2,22 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://HaveAnApplePie.github.io/posts/tech/cmu15213-cachelab/</loc>
+    <loc>https://haveanapplepie.github.io/posts/tech/cmu15418-assignment1/</loc>
+    <lastmod>2023-06-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://haveanapplepie.github.io/</loc>
+    <lastmod>2023-06-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://haveanapplepie.github.io/posts/</loc>
+    <lastmod>2023-06-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://haveanapplepie.github.io/posts/tech/cmu15213-cachelab/</loc>
     <lastmod>2023-02-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://HaveAnApplePie.github.io/</loc>
-    <lastmod>2023-02-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://HaveAnApplePie.github.io/posts/</loc>
-    <lastmod>2023-02-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://HaveAnApplePie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</loc>
+    <loc>https://haveanapplepie.github.io/posts/tech/python%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BA%A4%E4%BA%92%E5%BA%93prompt/</loc>
     <lastmod>2021-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://HaveAnApplePie.github.io/categories/</loc>
+    <loc>https://haveanapplepie.github.io/categories/</loc>
   </url><url>
-    <loc>https://HaveAnApplePie.github.io/series/</loc>
+    <loc>https://haveanapplepie.github.io/series/</loc>
   </url><url>
-    <loc>https://HaveAnApplePie.github.io/tags/</loc>
+    <loc>https://haveanapplepie.github.io/tags/</loc>
   </url>
 </urlset>
